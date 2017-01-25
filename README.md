@@ -4,6 +4,18 @@ sa-denyhosts
 
 Important: is is recommended to consider fail2ban utility alternative. Use denyhosts only if you really need it. Take a look on sa-box-bootstrap for example of usage.
 
+One of the reasons: for example, in 14.04 LTS package is no longer maintained
+
+```
+apt-get install denyhosts
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+E: Unable to locate package denyhosts
+
+Apparently it has been deleted, according to launchpad.
+```
+
 DenyHosts is a python program that automatically blocks SSH attacks by adding entries to /etc/hosts.deny. DenyHosts might also inform Linux administrators about offending hosts, attacked users and suspicious logins.
 
 
