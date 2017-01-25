@@ -1,0 +1,36 @@
+  - name: Deny Hosts | Install base packages
+    apt: pkg="{{item}}"
+    become: yes
+    with_items:
+      - "denyhosts"
+    tags:
+      - denyhosts
+
+  - name: Deny Hosts | Patch /etc/denyhosts.conf with default suggested config
+    lineinfile: dest=/etc/denyhosts.conf  regexp="{{item.regexp}}" line="{{item.line}}" insertafter="{{item.insertafter | default('EOF')}}"
+    with_items: "{{denyhosts_conf_default_props | default([])}}"
+    become: yes
+    tags:
+      - denyhosts
+
+  - name: Deny Hosts | Patch /etc/denyhosts.conf for server specific denyhosts.conf parts
+    lineinfile: dest=/etc/denyhosts.conf  regexp="{{item.regexp}}" line="{{item.line}}" insertafter="{{item.insertafter | default('EOF')}}"
+    with_items: "{{denyhosts_conf_props | default([])}}"
+    become: yes
+    tags:
+      - denyhosts
+
+  - name: Deny Hosts | Whitelist control hosts /etc/hosts.allow
+    lineinfile: dest='/etc/hosts.allow' line='{{item}}' insertafter="EOF" create=yes state=present
+    with_items: "{{deploy_whitelisted_hosts | default[]}}"
+    become: yes
+    tags:
+      - denyhosts
+
+  - name: Deny Hosts | Restart service
+    service: name=denyhosts state=restarted enabled=yes
+    when: docker_test is not defined
+    become: yes
+    tags:
+      - denyhosts
+
