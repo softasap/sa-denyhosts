@@ -22,7 +22,7 @@
 
   - name: Deny Hosts | Whitelist control hosts /etc/hosts.allow
     lineinfile: dest='/etc/hosts.allow' line='{{item}}' insertafter="EOF" create=yes state=present
-    with_items: "{{deploy_whitelisted_hosts | default[]}}"
+    with_items: "{{deploy_whitelisted_hosts | default([])}}"
     become: yes
     tags:
       - denyhosts
@@ -33,4 +33,3 @@
     become: yes
     tags:
       - denyhosts
-
